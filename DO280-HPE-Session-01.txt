@@ -271,6 +271,230 @@ kubeadmin - tmp cluster-admin account
 
 - Login to OCP cluster using "kubeadmin" 
 
+#########
+Quick Recap:-
+- OCP cluster [ As per our LABS ]
+  Master/Worker Node - master01.ocp4.example.com 
+  Cluster Name - ocp4 
+  base Domain  - example.com 
+  API URL port - 6443 
+  
+  API URL - https://api.ocp4.example.com:6443 
+  
+  
+- Login to OCP cluster using multiple account.
+admin/redhatocp - LDAP User 
+kubeadmin/kubeadmin-password [ Note: ssh root@utility ; cat /home/lab/ocp4/auth/kubeadmin-password ]
+
+admin & kubeadmin both users are "cluster-admin" user.
+
+- Few oc commands (via CLI).
+$ oc whoami 
+$ oc version 
+$ oc get clusterversion 
+$ oc get nodes 
+
+##### Unit-3 - Authentication and Authorization:-
+- Configure Identity Providers [What is idp ? ]
+- Multiple IDP:-
+  1. htpasswd (local account)
+  2. LDAP auth 
+  3. OpenID connect (Cloud service use this ]
+  4. keystone 
+  5. Github or GitHUb Enterpise [oauth apps]
+
+As of now - htpasswd identity provider (IDP=htpasswd).
+
+- User ; identity ; group ; Service Account ; Role [ Set of rules ] ; Role Binding 
+
+- Multiple methods to login to OCP cluster.
+
+1. X.509 client certificates  (Certificate based auth)
+FYI- Based on authentication, user/groups authorization defined.
+
+********* AT LAB *****************
+$ ssh root@utility
+# cd /home/lab/ocp4/auth 
+# scp -r kube* student@workstation:/home/student 
+student's Password: student 
+# exit 
+$ ls -l kube* 
+kubeadmin-password
+kubeconfig 
+
+1st-Method:- 
+$ oc get nodes --kubeconfig /home/student/kubeconfig 
+
+
+2nd-method:-
+Defined KUBECONFIG variable.
+
+$ env | grep KUBECONFIG 
+$ export KUBECONFIG=/home/student/kubeconfig
+$ env | grep KUBECONFIG
+KUBECONFIG=/home/student/kubeconfig
+
+Un-defined KUBECONFIG variable.
+$ unset KUBECONFIG 
+$ env | grep KUBECONFIG 
+$ oc get nodes  [ This will not work]
+
+
+3rd-Method:-
+$ cp -rpv /home/student/kubeconfig /home/student/.kube/config 
+$ oc get nodes 
+
+############
+2. OAuth access tokens (Token based auth).
+User Name - kubeadmin 
+Password  - kubadmin-password [ /home/student/kubeadmin-password ]
+API URL   - https://api.ocp4.example.com:6443 
+
+$ oc login -u kubeadmin -p kubadmin-password https://api.ocp4.example.com:6443 
+
+# Lab - Create Users and login to OCP cluster.
+user1-5 and password "redhat123"
+
+Step-1: Create user & it's Credentials via "htpasswd" command.
+# which htpasswd 
+/bin/htpasswd 
+
+# rpm -q -f /bin/htpasswd 
+httpd-tools 
+
+# yum install httpd-tools
+
+
+$ htpasswd --help 
+$ htpasswd -c -B -b any-file-name.txt user1 redhat123 
+$ htpasswd  -B -b any-file-name.txt user2 redhat123 
+$ htpasswd  -B -b any-file-name.txt user3 redhat123 
+$ htpasswd  -B -b any-file-name.txt user4 redhat123 
+$ htpasswd  -B -b any-file-name.txt user5 redhat123 
+
+$ ls -l any-file-name.txt
+$ cat any-file-name.txt
+
+Step-2:- Update/inject this file to OCP cluster.
+Kubernetes/OpenShift's resources:-
+secret  - Used for store confidential data 
+configmap (cm) - Used to store configurational data (Not very confidential data)
+
+secret type - generic; tls ; docker-registry 
+
+
+ Linux - File -> Dir 
+ OCP   - Resources (pod, svc, secret, cm) -> namespace (project).
+ 
+$ oc create secret generic htpasswd-secret --from-file htpasswd=any-file-name.txt -n openshift-config 
+$ oc get secret htpasswd-secret  -n openshift-config
+$ oc get secret htpasswd-secret  -n openshift-config -o yaml > mysecret.yaml 
+$ oc get secret htpasswd-secret  -n openshift-config -o json > mysecret.json 
+
+
+
+Step-3:- Update the oauth file.
+
+https://docs.redhat.com/en/documentation/openshift_container_platform/4.13/html/authentication_and_authorization/configuring-identity-providers#identity-provider-htpasswd-CR_configuring-htpasswd-identity-provider
+
+
+$ oc get oauth/cluster -o yaml > oauth.yaml 
+$ vim oauth.yaml 
+
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: my_htpasswd_provider 
+    mappingMethod: claim 
+    type: HTPasswd
+    htpasswd:
+      fileData:
+        name: htpass-secret 
+
+
+$ oc apply -f oauth.yaml 
+$ oc login -u user1 -p redhat123 https://api.ocp4.example.com:6443 
+$ oc login -u user2 -p redhat123 https://api.ocp4.example.com:6443 
+$ oc login -u user3 -p redhat123 https://api.ocp4.example.com:6443 
+$ oc login -u user4 -p redhat123 https://api.ocp4.example.com:6443 
+$ oc login -u user5 -p redhat123 https://api.ocp4.example.com:6443 
+
+FYI - 
+$ oc whoami 
+user5 
+$ oc get users [It will not have previleage to do this ]
+$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443 
+$ oc get users 
+
+
+
+oc get pods -n ns 
+
+ns - namespace 
+- openshift-authentication [ns]
+- openshift-api-server
+- openshift-kube-apiserver 
+- openshift-etcd 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
