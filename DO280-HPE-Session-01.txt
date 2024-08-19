@@ -1,0 +1,345 @@
+Point-01 
+### Login to Red Hat Training environment.
+
+https://rol.redhat.com (userName/Password).
+- Overview ( Giving informaiton for this course - DO280v414)
+- Lab  (Access Your labs)
+- Resources - BookSlef/Download Ebook.
+
+POint-02 
+Discussion on TOC.
+
+Unit-1:- Declarative Resource Management   (github.com/cprakash2118/do280v414-docs)
+ - Kubernetes resources Manifest (Create/update/manage/delete)
+ - Kustomization-Overlay 
+
+Unit-2:- Deploy Packaged Applications 
+- Templates 
+- Helm Chart 
+
+Unit-3:- Authentication & Authorization:-
+- Login to OCP cluster 
+- Identity Providers (ipd - htpasswd, LDAP, OpenID Connect, Keystone etc )
+- htpasswd as Identity Providers (Operations w.r.t Users/Groups)
+- Role Base Access Control (RBAC).
+
+so on.
+
+******************************************************
+## Containerization:-
+1- Container [ Managing containers via Container Engine - podman, docker, crio, containerd ] 
+2- Container Orchestration [ Managing containers via Orchestration tool - Kubernetes ]
+
+Note: Red Hat OpenShift Container Platform is a kubernetes based distribution.
+
+## Product - Red Hat OpenShift Container Platform
+
+## Training module - DO280v414 (Admin Track - Operations).
+
+
+## Classroom Environment.
+1) Users Details - w.r.t VMs/Servers 
+   student/student [ student having sudo access across all VMs ]
+   root/redhat 
+
+2) Domain/ Network 
+    Network Name          Domain             IP Range 
+   student Network      lab.example.com      172.25.250.0/24 
+   cluster Network      ocp4.example.com     192.168.50.0/24 
+   
+   Example:-
+   IBM - Gateway ( lab.example.com )
+   Citi Bank Project (ocp4.example.com )
+
+3) VMs/Servers 
+       VMS/Serves Name              IP Addr                          Role  
+ 3.1 workstation.lab.example.com    172.25.250.9                     Jump/GUI 
+
+ 3.2 utility.lab.example.com       172.25.250.253                   Utility (Build OCP cluster)
+                                  192.168.50.254
+								  192.168.51.254
+   Note:utility.lab.example.com server providing [DNS/HAproxy/DHCP/PXE/NFS Other service].
+   
+ 3.3 bastion.lab.example.com   [ Act as router which connect student n/w to classroom n/w]
+
+ 3.4 classroom.lab.example.com [ Provide access to internal - quay.io/github.com/docker.io/registry.access.redhat.com etc ] 
+   
+ 3.5 registry.ocp4.example.com     192.168.50.50       Private Registry 
+ 
+ 3.6 idm.ocp4.example.com          192.168.50.40       LDAP server.
+ 
+ 3.7 master01.ocp4.example.com     192.168.50.10       OCP cluster 
+
+  Note: As per Production setup.
+   master01-03.ocp4.example.com 
+   worker01-0N.ocp4.example.com 
+   
+   
+   Eg:
+   master01.ocp4.example.com 
+   master02.ocp4.example.com 
+   master03.ocp4.example.com 
+   
+   worker01.ocp4.example.com
+   ...
+   ...
+   worker100.ocp4.example.com 
+   
+   - Applications running on master nodes (control plan) are kubernetes/OpenShift's applications.
+   As per Kubernetes w.r.t OCP - [crio, kubelet, api-server, etcd, kube-scheduler, kube-controller ]
+   
+   - Applications running on worker nodes (Compute node) are end users applications.
+     Eg: citi.com (Banking services)   
+
+Trainig Modules - (Learning Path).
+DO180/280/380 (Admin I/II/III)
+DO188/288     (Developer)
+DO370         (ODF - Stoarge)
+DO480         (RHACM/RHCSM/Quay.io)
+DO328         (Red Hat Service Mesh - Isito)
+DO322         (INstallation) 
+
+#############
+"Kubernetes  Cluster" Vs "Red Hat OpenShift Cluster" 
+
+https://www.redhat.com/en/technologies/cloud-computing/openshift
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+
+
+"Kubernetes Cluster"
+
+5th Layer -   End user applications [citi, makemytrip.com ] 
+4th Layer -   Add-on Service [ coreDNS, Networking, auth, metalLB service etc ]
+3rd Layer -   Certified Kubernetes setup 
+              Note:  [ kubelet, api-server, etcd, kube-scheduler, kube-controller ]
+2nd Layer -   Conatiner RUN time Environment [ Containerd, crio etc ]
+1st Layer -   OS-Server [ RHEL/Suse Linux/Amazone Linux etc - Enterpise Linux] 
+              ============ HW/VMs/Cloud  ============
+master01/02/03 
+
+https://github.com/cprakash2118/kubernetes-projects
+
+
+"Red Hat OpenShift Cluster" 
+
+7th Layer -   End user applications [citi, makemytrip.com ] 
+6th Layer -   Red Hat OpenShift Plus 
+5th layer -   Red Hat OpenShift Conatiner Platform
+4th Layer -   Red Hat OpenShift Kubernetes engine
+              Note: Cluster Services - networking, OTA, Monitoring, Internal Registry, KubeVirt, Helm] 
+3rd Layer -   Certified Kubernetes setup 
+              Note:  [ kubelet, api-server, etcd, kube-scheduler, kube-controller ]
+2nd Layer -   Conatiner RUN time Environment [ crio ]
+1st layer -   OS-server [ Container Optimized OS - RHEL CoreOS ] Changes here as Images 
+              ============ HW/VMs/Cloud  ============
+
+
+Red Hat OpenShift 
+AWS EKS 
+Azure Kubernetes Service 
+VMware Tanzu 
+Google kubernetes engine [Anthos]
+etc 
+
+#############################
+Red Hat OpenShift Cluster:-
+- OCP cluster (OpenShift Cluster).
+  master nodes + Worker nodes (worker node -> stoarge/infra)
+  Note: As per Production - 3 master nodes, N number worker nodes (based on End user applications).
+  
+- OpenShift Cluster version ?
+  Note: RHEL coreOS version is Red Hat OpenShift version (RHOCP)
+  
+- How to connect OCP cluster?
+  Note: 
+    - Using oc (OpenShift-Client - Used to communicate with OCP cluster via CLI)
+    - Using WebConsole access to OCP cluster (GUI).
+	- API Method 
+
+- Kubernetes/OpenShift share Rest API to manage it's all resources.
+
+LAB access:-
+- Open terminal [Click on "Activities" the open terminal]
+
+$ which oc 
+/usr/local/bin/oc 
+
+$ oc --help |less 
+
+$ oc whoami 
+Note: Login to OCP cluster, we have two methods via CLI.
+1st - Using kubeconfig file (This is Certificate based authentication).
+2nd -  Using user & api URL  (This is Token based authentication).
+
+As of now using 2nd Method.
+Username=admin
+Password=redhatocp
+API URL = https://api.ocp4.example.com:6443 
+
+$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443 
+
+$ oc whoami 
+$ oc version
+$ oc get clusterversion 
+$ oc get nodes 
+
+#############
+Username=admin
+Password=redhatocp
+API URL = https://api.ocp4.example.com:6443 
+
+$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443 
+
+- How we will get API URL ?
+This is my API URL  - https://api.ocp4.example.com:6443  ?
+
+OCP clusters 
+-----------
+1st cluster name - ocp4-na-c1
+Base Domain - citi.com  
+
+username (default "cluster-admin" user) - kubeadmin 
+
+kubeadmin password = At the time of OCP cluster installation - "auth/kubeadmin-password"
+cat auth/kubeadmin-password
+
+API URL - https://api.CLusterName.BaseDOmain:6443 
+        - https://api.ocp4-na-c1.citi.com:6443 
+
+
+------------
+
+2nd cluster name - ocp4-na-c2
+Base Domain - citi.com  
+
+username (default "cluster-admin" user) - kubeadmin 
+
+kubeadmin password = At the time of OCP cluster installation - "auth/kubeadmin-password"
+cat auth/kubeadmin-password
+
+API URL - https://api.CLusterName.BaseDOmain:6443 
+        - https://api.ocp4-na-c2.citi.com:6443 
+		
+
+As per Our LAB environment:-
+cluster Name - ocp4 
+Base Domain  - example.com 
+
+API URL - https://api.ocp4.example.com:6443 
+
+WHY alway on 6443 ? 
+
+
+kubeadmin's password (or file = kubeadmin-password)
+API URL = https://api.ocp4.example.com:6443 
+
+CLuster Name- ocp4 
+Base DOmain - example.com 
+
+Note: install-config.yaml (At the time of installation - Admin provide all details).
+
+###
+$ whoami ; hostname -f 
+student 
+workstation.lab.example.com 
+
+$ ssh root@utility 
+or
+$ ssh root@utility.lab.example.com 
+# cd /home/lab/ocp4 
+# ls 
+all files here [ auth directory & install-config.yaml ]
+# cd auth 
+# pwd
+/home/lab/ocp4/auth
+# ls 
+kubeconfig  
+kubeadmin-password
+
+# cat kubeadmin-password
+askjdhsajkhdkjashdkjas
+
+# cat kubeconfig | grep server 
+https://api.ocp4.example.com:6443 
+
+# cat /etc/haproxy/htproxy.cfg | grep 6443 
+
+
+$ oc login -u kubeadmin -p askjdhsajkhdkjashdkjas https://api.ocp4.example.com:6443 
+
+kubeadmin - tmp cluster-admin account 
+
+- Login to OCP cluster using "kubeadmin" 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
