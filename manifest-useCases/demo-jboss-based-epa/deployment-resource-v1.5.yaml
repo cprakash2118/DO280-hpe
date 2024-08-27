@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jboss-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jboss
+  template:
+    metadata:
+      labels:
+        app: jboss
+    spec:
+      tolerations:
+      - key: "key1"
+        value: "value1"
+        operator: "Equal"
+        effect: "NoSchedule"
+      nodeSelector:
+          env: prod
+      containers:
+      - name: jboss
+        image: quay.io/cprakash2118/jboss-image-v74-update
+        ports:
+        - containerPort: 8080
+        - containerPort: 9990
+        - containerPort: 9999

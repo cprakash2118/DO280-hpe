@@ -1,0 +1,8 @@
+kind: Kustomization
+commonLabels:
+  app: exoplanets
+resources:
+- deployment.yaml
+- service.yaml
+- route.yaml
+

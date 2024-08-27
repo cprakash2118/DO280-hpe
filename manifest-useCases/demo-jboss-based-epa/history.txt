@@ -1,0 +1,926 @@
+    1  rm -rf ~/.bash_history 
+    2  poweroff
+    3  hostnamectl set-hostname k8s-master-02.lab.example.com
+    4  hostnamectl set-hostname k8s-master20-02.lab.example.com
+    5  hostname -I >> /etc/hosts
+    6  hostname  >> /etc/hosts
+    7  vim /etc/hosts
+    8  exit
+    9  sudo modprobe br_netfilter
+   10  sudo modprobe ip_vs
+   11  sudo modprobe ip_vs_rr
+   12  sudo modprobe ip_vs_wrr
+   13  sudo modprobe ip_vs_sh
+   14  sudo modprobe overlay
+   15  cat > /etc/modules-load.d/kubernetes.conf << EOF
+   16  br_netfilter
+   17  ip_vs
+   18  ip_vs_rr
+   19  ip_vs_wrr
+   20  ip_vs_sh
+   21  overlay
+   22  EOF
+   23  cat /etc/modules-load.d/kubernetes.conf
+   24  cat > /etc/sysctl.d/kubernetes.conf << EOF
+   25  net.ipv4.ip_forward = 1
+   26  net.bridge.bridge-nf-call-ip6tables = 1
+   27  net.bridge.bridge-nf-call-iptables = 1
+   28  EOF
+   29  sysctl --system
+   30  sudo swapoff -a
+   31  sed -e '/swap/s/^/#/g' -i /etc/fstab
+   32  cat /etc/fstab 
+   33  sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+   34  sudo dnf makecache
+   35  sudo dnf -y install containerd.io
+   36  sudo sh -c "containerd config default > /etc/containerd/config.toml" ; cat /etc/containerd/config.toml
+   37  vim /etc/containerd/config.toml 
+   38  sudo systemctl enable --now containerd.service
+   39  sudo systemctl reboot
+   40  hostname
+   41  dnf install kernel-devel 
+   42  mkdir tmp
+   43  cd tmp/
+   44  git clone https://github.com/cprakash2118/kubernetes-test
+   45  cat kubernetes-test/New-file.txt |less
+   46  cat /etc/hosts
+   47  ssh 172.25.230.213 -l root
+   48  systemctl status kubelet.service 
+   49  systemctl restart kubelet.service 
+   50  systemctl enable kubelet.service 
+   51  systemctl restart containerd.service 
+   52  kubectl version 
+   53  crictl ps
+   54  kubectl version 
+   55  uptime 
+   56  crictl ps 
+   57  crictl ps -a
+   58  kubectl version 
+   59  hostname -I 
+   60  kubectl version 
+   61  crictl ps
+   62  crictl ps -a
+   63  reboot 
+   64  kubectl version 
+   65  systemctl restart containerd.service 
+   66  systemctl status kubelet.service 
+   67  systemctl stop kubelet.service 
+   68  systemctl status containerd.service 
+   69  systemctl restart kubelet.service 
+   70  systemctl status kubelet.service 
+   71  kubectl version 
+   72  crictl ps
+   73  crictl ps -a
+   74  systemctl restart kubelet.service 
+   75  systemctl status kubelet.service 
+   76  crictl ps
+   77  pwddddddddd
+   78  pwd
+   79  ll
+   80  cd work/
+   81  pwd
+   82  ll
+   83  cd ..
+   84  cd projects/
+   85  ll
+   86  cd 4th-project/
+   87  ll
+   88  cd kubernetes-projects/
+   89  ll
+   90  cd MetalLB-setup/
+   91  ll
+   92  vim Step-5-update-nginx-ingress.yaml.txt 
+   93  cacat step-4-commands.txt 
+   94  cat step-4-commands.txt 
+   95  ll
+   96  cat Step-5-update-nginx-ingress.yaml.txt 
+   97  cd ..
+   98  ll
+   99  cat commands-concepts-reference-.txt 
+  100  ll
+  101  cd ..
+  102  grep -ir "IPAddressPool" *
+  103  cat 3rd-project/kubernetes-projects/MetalLB-setup/IPAddressPool.yaml
+  104  hostname -I 
+  105  ping 172.25.22.101
+  106  curl 172.25.22.101:80
+  107  crictl 
+  108  crictl ps 
+  109  kubectl version 
+  110  history 
+  111  history  | grep init 
+  112  exit
+  113  kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
+  114  curl -O https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/custom-resources.yaml
+  115  sed -i 's/cidr: 192\.168\.0\.0\/16/cidr: 10.244.0.0\/16/g' custom-resources.yaml
+  116  kubectl create -f custom-resources.yaml
+  117  sudo kubeadm token create --print-join-command
+  118  cat /etc/hosts
+  119  history | grep rm 
+  120  kubectl version 
+  121  kubectl get nodes
+  122  kubectl get pods -n kubectln 
+  123  kubectl get pods -n kubectl
+  124  kubectl get pods -n kube-system 
+  125  kubectl version 
+  126  kubectl get nodes
+  127  kubectl get pods -n kube-system l
+  128  kubectl get pods -n kube-system 
+  129  kubectl delete pod coredns-76f75df574-5t86j -n kube-system 
+  130  kubectl delete pod coredns-76f75df574-rl7dqn kube-system 
+  131  kubectl delete pod coredns-76f75df574-rl7dq kube-system 
+  132  kubectl get pods -n kube-system 
+  133  kubectl get pods -n kubectl
+  134  kubectl get pods -n kube-system
+  135  kubectl get events | grep core 
+  136  kubectl get events | grep -i core 
+  137  kubectl get events 
+  138  kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
+  139  curl -O https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/custom-resources.yaml
+  140  sed -i 's/cidr: 192\.168\.0\.0\/16/cidr: 10.244.0.0\/16/g' custom-resources.yaml
+  141  kubectl create -f custom-resources.yaml
+  142  kubectl get pods -n kube-system
+  143  kubectl scale --replicas 2 deployment coredns 
+  144  kubectl get deployment -n kube-system
+  145  kubectl scale --replicas=0 deployment coredns -n kube-system
+  146  kubectl scale --replicas=2 deployment coredns -n kube-system
+  147  kubectl get pods -n kube-system
+  148  history | grep app
+  149  kubectl get pods -n kube-system
+  150  kubectl get deployment -n kube-system
+  151  kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
+  152  curl -O https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/custom-resources.yaml
+  153  ll
+  154  vim custom-resources.yaml 
+  155  sed -i 's/cidr: 192\.168\.0\.0\/16/cidr: 10.244.0.0\/16/g' custom-resources.yaml
+  156  vim custom-resources.yaml 
+  157  kubectl create -f custom-resources.yaml
+  158  sudo kubeadm token create --print-join-command
+  159  kubectl apply -f custom-resources.yaml
+  160  kubectl get pods -n kube-system
+  161  kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
+  162  kubectl apply -f custom-resources.yaml
+  163  kubectl get pods -n kube-system
+  164  kubectl scale --replicas=2 deployment coredns -n kube-system
+  165  kubectl scale --replicas=0 deployment coredns -n kube-system
+  166  kubectl scale --replicas=2 deployment coredns -n kube-system
+  167  kubectl get pods -n kube-system
+  168  cat projects/kubernetes-setup.txt/kubernetes-setup-recap |less
+  169  curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+  170  helm repo add metallb https://metallb.github.io/metallb
+  171  kubectl get ns
+  172  kubectl create namespace metallb-system
+  173  ll
+  174  cd projects/
+  175  ll
+  176  cd kubernetes-projects/
+  177  ll
+  178  cd MetalLB-setup/
+  179  ll
+  180  helm install metallb metallb/metallb --namespace metallb-system
+  181  kubectl get ns
+  182  kubectl get nall -n metallb-system 
+  183  kubectl get all -n metallb-system 
+  184  ll
+  185  vim step-3-metallb-config.yaml.txt 
+  186  kubectl apply -f step-3-metallb-config.yaml.txt 
+  187  mv step-3-metallb-config.yaml.txt step-3-metallb-config.yaml
+  188  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+  189  kubectl get ns
+  190  kubectl get all -n ingress-nginx
+  191  pwd
+  192  cd
+  193  grep -ir "IPAddressPool" *
+  194  cp -rpv projects/3rd-project/kubernetes-projects/MetalLB-setup/IPAddressPool.yaml /root/projects/kubernetes-projects/MetalLB-setup/
+  195  cd -
+  196  vim IPAddressPool.yaml 
+  197  kubectl apply -f IPAddressPool.yaml 
+  198  kubectl get all -n ingress-nginx
+  199  cat /etc/hosts
+  200  kubectl get all -n ingress-nginx
+  201  vim /etc/hosts
+  202  kubectl create ns demo-svc-lb-via-metallb
+  203  kubectl config set-context --current --namespace=demo-svc-lb-via-metallb
+  204  vim ~/.bashrc 
+  205  kubectl config view --minify --output 'jsonpath={..namespace}' ; echo  
+  206  vim ~/.bashrc 
+  207  source ~/.bashrc
+  208  show-current-ns 
+  209  kubectl get all
+  210  pwd
+  211  cd ..
+  212  ..
+  213  ll
+  214  cd ..
+  215  ll
+  216  mkdir 5th-project
+  217  cd 5th-project/
+  218  pwd
+  219  ll
+  220  vim deployment-resource.yaml 
+  221  vim service-resource.yaml 
+  222  vim -O ingress-resource.yaml deployment-resource.yaml 
+  223  ll
+  224  vim -O ingress-resource.yaml deployment-resource.yaml 
+  225  kubectl apply -f deployment-resource.yaml 
+  226  kubectl apply -f service-resource.yaml 
+  227  kubectl apply -f ingress-resource.yaml 
+  228  kubectl get pods 
+  229  kubectl get svc 
+  230  kubectl get ingress 
+  231  curl http://myapp.lab.example.com
+  232  curl http://myapp.lab.example.com/
+  233  vim -O service-resource.yaml ingress-resource.yaml /etc/hosts 
+  234  cat /etc/hosts
+  235  dig myapp.lab.example.com
+  236  kubectl get all -n ingress-nginx 
+  237  ping 172.25.231.150
+  238  kubectl get all 
+  239  curl http://172.25.231.151
+  240  kubectl get all -n ingress-nginx 
+  241  kubectl logs -n ingress-nginx -l app.kubenetes.io/name=ingress-nginx 
+  242  kubectl logs -n ingress-nginx -l app.kubenetes.io/name=ingress-nginx-controller
+  243  kubectl logs -n ingress-nginx -l pod/ingress-nginx-controller-57b7568757-9tgz9
+  244  kubectl get all -n ingress-nginx 
+  245  kubectl logs -n ingress-nginx -l pod ingress-nginx-controller-57b7568757-9tgz9
+  246  kubectl logs -n ingress-nginx ingress-nginx-controller-57b7568757-9tgz9
+  247  vim ingress-resource.yaml 
+  248  kubectl apply  -f ingress-resource.yaml 
+  249  kubectl logs -n ingress-nginx ingress-nginx-controller-57b7568757-9tgz9
+  250  kubectl get ingress
+  251  curl http://172.25.231.150
+  252  curl http://172.25.231.150/
+  253  curl http://172.25.231.150:80/
+  254  kubectl get all
+  255  curl http://172.25.231.151:80/
+  256  kubectl get ingres
+  257  kubectl get ingress
+  258  kubectl get all -n ingress-nginx 
+  259  curl http://172.25.231.151:32097
+  260  curl http://172.25.231.151:32097/
+  261  curl http://172.25.231.150:32097
+  262  curl http://172.25.231.150:32097/
+  263  curl http://172.25.231.150/
+  264  kubectl logs -n ingress-nginx ingress-nginx-controller-57b7568757-9tgz9
+  265  kubectl get all -n ingress-nginx 
+  266  ping 172.25.231.150
+  267  kubectl get  all -n metallb-system 
+  268  kubectl get ns
+  269  kubectl get all -n metallb-system 
+  270  kubectl get all -n ingress-nginx 
+  271  show-current-ns 
+  272  which show-current-ns
+  273  vim ~/.bashrc 
+  274  kubectl get pdos 
+  275  kubectl get pods
+  276  kubectl get svc 
+  277  kubectl get deployment 
+  278  kubectl get replicaset 
+  279  kubectl get ingress
+  280  cat /etc/hosts | grep myapp.lab.example.com
+  281  pwd
+  282  ll
+  283  vim -O deployment-resource.yaml service-resource.yaml ingress-resource.yaml 
+  284  kubectl get ingress
+  285  curl http://myapp.lab.example.com
+  286  kubectl get svc 
+  287  ll
+  288  vim service-resource.yaml 
+  289  cp -rpv service-resource.yaml service-resource-cip.yaml 
+  290  vim service-resource-cip.yaml 
+  291  kubectl apply -f service-resource-cip.yaml 
+  292  kubectl get pods
+  293  kubectl get svc 
+  294  vim ingress-resource.yaml 
+  295  cp -rpv ingress-resource.yaml ingress-resource-cip.yaml 
+  296  vim ingress-resource-cip.yaml 
+  297  kubectl apply -f ingress-resource-cip.yaml 
+  298  vim ingress-resource-cip.yaml 
+  299  kubectl delete ingress nginx-ingress 
+  300  kubectl apply -f ingress-resource-cip.yaml 
+  301  kubectl get pods
+  302  kubectl get svc 
+  303  kubectl get ingress
+  304  vim ingress-resource-cip.yaml 
+  305  kubectl get all -m ingress-resource
+  306  kubectl get all -n ingress-nginx 
+  307  kubectl get ingress
+  308  kubectl get pods
+  309  kubectl get svc 
+  310  kubectl get ingress
+  311  kubectl describe ingress nginx-ingress-cip |less
+  312  vim ingress-resource-cip.yaml 
+  313  curl http://myapp.lab.example.com
+  314  kubectl get pods
+  315  ll
+  316  vim -O deployment-resource.yaml service-resource-cip.yaml ingress-resource-cip.yaml 
+  317  kubectl get ingress
+  318  kubectl get all -n ingress-nginx 
+  319  cat /etc/hosts
+  320  kubectl get svc 
+  321  kubectl delete svc nginx-service
+  322  kubectl get pods
+  323  kubectl get svc 
+  324  kubectl get ingress
+  325  kubectl get pods
+  326  kubectl get ns
+  327  kubectl version 
+  328  kubectl get pods
+  329  kubectl get svc 
+  330  kubectl get deployment 
+  331  kubectl get ingress
+  332  cat /etc/hostname 
+  333  cat /etc/hosts
+  334  kubectl get nodes
+  335  timedatectl 
+  336  pwd
+  337  cd
+  338  grep -ir "IPAddressPool"
+  339  grep -ir "IPAddressPool" *
+  340  cat projects/kubernetes-projects/MetalLB-setup/IPAddressPool.yaml
+  341  kubectl get ds
+  342  kubectl get daemonset 
+  343  kubectl get daemonsets -n all 
+  344  kubectl get daemonsets -n kube-system 
+  345  kubectl get daemonsets -n metallb-system 
+  346  kubectl get daemonsets -n ingress-nginx 
+  347  kubectl get pods -n kube-system 
+  348  kubectl get daemonsets -n kube-system 
+  349  kubectl get ns
+  350  kubectl get pods -n calico-system
+  351  kubectl get pods -n calico-system -o wide 
+  352  kubectl get ns 
+  353  kubectl create ns demo-pod-scheduling 
+  354  cat ~/.bashrc 
+  355  kubectl get ns | grep demo 
+  356  set-ns demo-pod-scheduling
+  357  cat ~/.bashrc | tail -3
+  358  show-current-ns 
+  359  which show-current-ns 
+  360  kubectl get all
+  361  cd projects/
+  362  ll
+  363  cd 5th-project/
+  364  ll
+  365  mkdir new
+  366  cp -rpv deployment-resource.yaml service-resource.yaml new/
+  367  cd new/
+  368  pwd
+  369  ll
+  370  vim deployment-resource.yaml 
+  371  vim service-resource.yaml 
+  372  kubectl apply -f deployment-resource.yaml 
+  373  kubectl apply -f service-resource.yaml 
+  374  kubectl get pods
+  375  kubectl get pods -o wide 
+  376  kubectl describe nodes \ grep -i taint 
+  377  kubectl describe nodes | grep -i taint 
+  378  kubectl --help \less
+  379  kubectl --help |less
+  380  kubectl describe nodes | grep -i taint 
+  381  #kubectl train nodes 
+  382  kubectl get nodes 
+  383  kubectl taint k8s-worker20-01.lab.example.com key1=value1:NoSchedule
+  384  kubectl taint k8s-worker20-01 key1=value1:NoSchedule
+  385  kubectl taint nodes k8s-worker20-01.lab.example.com key1=value1:NoSchedule
+  386  kubectl describe nodes | grep -i taint 
+  387  kubectl get pods 
+  388  kubectl get pods -o wide 
+  389  kubectl scale --replicas=1 deployment nginx-deployment 
+  390  kubectl get pods -o wide 
+  391  kubectl scale --replicas=5 deployment nginx-deployment 
+  392  kubectl get pods -o wide 
+  393  kubectl scale --replicas=3 deployment nginx-deployment 
+  394  kubectl get pods -o wide 
+  395  kubectl taint nodes k8s-worker20-02.lab.example.com key1=value1:NoSchedule
+  396  kubectl describe nodes | grep -i taint 
+  397  kubectl get pods -o wide 
+  398  kubectl scale --replicas=5 deployment nginx-deployment 
+  399  kubectl get pods -o wide 
+  400  ll
+  401  cp -rpv deployment-resource.yaml deployment-resource-v1.2.yaml 
+  402  vim deployment-resource-v1.2.yaml 
+  403  kubectl get pods -o wide 
+  404  kubectl apply -f deployment-resource-v1.2.yaml 
+  405  kubectl get pods -o wide 
+  406  vim deployment-resource-v1.2.yaml 
+  407  kubectl apply -f deployment-resource.yaml 
+  408  kubectl get pods -o wide 
+  409  ll
+  410  vim -O deployment-resource.yaml deployment-resource-v1.2.yaml 
+  411  vim deployment-resource-v1.2.yaml 
+  412  kubectl apply -f deployment-resource.yaml 
+  413  kubectl get pods
+  414  kubectl get pods -o wide 
+  415  kubectl apply -f deployment-resource-v1.2.yaml 
+  416  kubectl get pods -o wide 
+  417  kubectl describe nodes | grep -i taint 
+  418  cp -rpv deployment-resource.yaml deployment-resource-new-app.yaml 
+  419  vim deployment-resource-new-app.yaml 
+  420  cp -rpv service-resource.yaml service-resource-new.yaml 
+  421  vim service-resource-new.yaml 
+  422  kubectl apply -f deployment-resource-new-app.yaml 
+  423  kubectl get pods
+  424  vim -O deployment-resource.yaml deployment-resource-v1.2.yaml deployment-resource-new-app.yaml 
+  425  kubectl get all
+  426  kubectl get events | grep nginx-new 
+  427  kubectl describe nodes k8s-worker20-01.lab.example.com |less
+  428  kubectl describe nodes k8s-worker20-02.lab.example.com |less
+  429  kubectl get deployment 
+  430  kubectl delete deployment nginx-deployment 
+  431  kubectl delete deployment nginx-new-deployment
+  432  kubectl get nodes --show-labels 
+  433  kubectl label nodes k8s-worker20-01.lab.example.com env=prod 
+  434  kubectl label nodes k8s-worker20-02.lab.example.com env=prod 
+  435  kubectl label nodes k8s-worker20-02.lab.example.com env-
+  436  kubectl get nodes --show-labels 
+  437  kubectl get nodes --show-labels | grep env 
+  438  vim deployment-resource-v1.2.yaml 
+  439  wq
+  440  kubectl apply -f deployment-resource-v1.2.yaml 
+  441  kubectl get pods
+  442  kubectl get pods -o wide 
+  443  vim deployment-resource-v1.2.yaml 
+  444  kubectl delete deployments.apps nginx-deployment 
+  445  ll
+  446  kubectl get all
+  447  kubectl get svc 
+  448  kubectl delete svc nginx-service 
+  449  kubectl get all
+  450  show-current-ns 
+  451  kubectl describe nodes  | grep -i taint 
+  452  ll
+  453  vim deployment-resource-v1.2.yaml
+  454  kubectl get nodes 
+  455  kubectl get nodes --show-labels 
+  456  kubectl get nodes --show-labels | grep env 
+  457  kubectl label nodes k8s-worker20-01.lab.example.com env-
+  458  kubectl get nodes --show-labels | grep env 
+  459  ll
+  460  kubectl apply -f deployment-resource-v1.2.yaml 
+  461  vim service-resource.yaml 
+  462  vim -O deployment-resource-v1.2.yaml service-resource.yaml 
+  463  kubectl apply -f service-resource.yaml 
+  464  kubectl get pods
+  465  kubectl get events | grep nginx 
+  466  kubectl get events | grep nginx  |less
+  467  kubectl get pods
+  468  kubectl label nodes k8s-worker20-01.lab.example.com env=prod 
+  469  kubectl get pods
+  470  kubectl get pods -o wide 
+  471  vim -O deployment-resource.yaml deployment-resource-v1.2.yaml deployment-resource-new-app.yaml 
+  472  cp -rpv deployment-resource-v1.2.yaml deployment-resource-v1.3.yaml 
+  473  vim deployment-resource-v1.2.yaml 
+  474  vim -O deployment-resource.yaml deployment-resource-v1.2.yaml deployment-resource-v1.3.yaml deployment-resource-new-app.yaml 
+  475  kubectl get pods 
+  476  kubectl describe nodes k8s-worker20-01.lab.example.com \less
+  477  kubectl describe nodes k8s-worker20-01.lab.example.com|less
+  478  vim Containerfile 
+  479  cp -rpv Containerfile Containerfile.bkp
+  480  vim Containerfile.bkp 
+  481  vim Containerfile
+  482  podman build --help | grep layers
+  483  podman build ---layers false -t apache-image-v:1.1  .
+  484  podman build --layers false -t apache-image-v:1.1  .
+  485  podman build --layers false -t apache-image-v1  .
+  486  podman build -t apache-image-v1  .
+  487  podman images
+  488  podman login quay.io 
+  489  podman tag localhost/apache-image-v1 quay.io/cprakash2118/apache-image-v1
+  490  podman images
+  491  podman push quay.io/cprakash2118/apache-image-v1
+  492  vim Containerfile
+  493  ll
+  494  cp -rpv deployment-resource-v1.3.yaml deployment-resource-v1.4.yaml 
+  495  vim deployment-resource-v1.4.yaml 
+  496  podman images
+  497  vim deployment-resource-v1.4.yaml 
+  498  cp -rpv service-resource.yaml service-resource-apache.yaml 
+  499  vim service-resource-apache.yaml 
+  500  kubectlget pod 
+  501  kubectl get pods
+  502  kubectl delete deployments.apps nginx-deployment 
+  503  kubectl get svc 
+  504  kubectl delete service nginx-service 
+  505  kubectl get all 
+  506  kubectl apply -f deployment-resource-v1.4.yaml 
+  507  kubectl get pods
+  508  kubectl get  svc 
+  509  kubectl apply -f service-resource-apache.yaml 
+  510  kubectl get svc 
+  511  curl http://172.25.231.151
+  512  kubectl get pods
+  513  kubectl exec -it apache-deployment-697cd4fb85-c8h4q u root -- bash 
+  514  kubectl exec -it apache-deployment-697cd4fb85-dhllw u root -- bash 
+  515  kubectl exec -it apache-deployment-697cd4fb85-jdqlc u root -- bash 
+  516  kubectl get pods
+  517  kubectl get svc 
+  518  curl http://172.25.231.151
+  519  vim Containerfile
+  520  podman build -t apache-image-v1  .
+  521  podman images
+  522  podman tag localhost/apache-image-v1 quay.io/cprakash2118/apache-image-v1:8.8 
+  523  podman images
+  524  podman push quay.io/cprakash2118/apache-image-v1:8.8
+  525  ll
+  526  cp -rpv deployment-resource-v1.4.yaml deployment-resource-v1.5.yaml 
+  527  vim deployment-resource-v1.5.yaml 
+  528  kubectl get pods
+  529  kubectl exec -it apache-deployment-697cd4fb85-jdqlc u root -- bash 
+  530  kubectl apply -f deployment-resource-v1.5.yaml 
+  531  kubectl get pods
+  532  watch kubectl get pods
+  533  kubectl get pods
+  534  kubectl exec -it apache-deployment-594df4b7d5-nfcr6 u root -- bash 
+  535  ll
+  536  kubectl describe svc 
+  537  ll
+  538  pwd
+  539  cd ..
+  540  ll
+  541  mv new project5.2
+  542  ll
+  543  tree
+  544  mv service-resource.yaml service-resource-project5.yaml 
+  545  mv deployment-resource.yaml deployment-resource-project5.yaml 
+  546  pwd
+  547  ll
+  548  logname 
+  549  pwd
+  550  ll
+  551  cd ..
+  552  ll
+  553  mkdir projects-manifest
+  554  cp -rpv 1st-project 2nd-project 3rd-project 4th-project 5th-project projects-manifest/
+  555  ll
+  556  cp -rpv projects-manifest /tmp/
+  557  chown -R student:student /tmp/projects-manifest 
+  558  ll
+  559  cd ..
+  560  ll
+  561  mkdir GIT
+  562  cd GIT/
+  563  pwd
+  564  ll
+  565  git clone https://github.com/cprakash2118/kubernetes-projects 
+  566  ll
+  567  cp -rp /tmp/projects-manifest kubernetes-projects/Kubernetes-Basic-Advance-Labs/
+  568  pwd
+  569  ll
+  570  git status 
+  571  cd kubernetes-projects/
+  572  git status 
+  573  git add .
+  574  git commit -m update 
+  575  git push 
+  576  ll
+  577  cat /etc/hosts 
+  578  kubectl all                                                                 -n qpoooooooooooooooooooooooodsc
+  579  kubectl set all -n metallb-system 
+  580  cat /etc/hosts
+  581  kubectl get all -n ingress-nginx 
+  582  cd projects/
+  583  ll
+  584  cd kubernetes-projects/
+  585  ll
+  586  cd ..
+  587  ll
+  588  cd 5th-project/
+  589  pwd
+  590  ll
+  591  vim service-resource.yaml 
+  592  kubeadm init --pod-network-cidr=10.244.0.0/16 
+  593  systemctl status kubelet.service 
+  594  crictl 
+  595  crictl ps
+  596  crictl ps -a
+  597  ctr ps
+  598  kubeadm reset -f 
+  599  rm -rf /etc/cni/net.d/
+  600  rm -rf /var/lib/cni/
+  601  rm -rf /etc/kubernetes/
+  602  kubeadm init --pod-network-cidr=10.244.0.0/16 
+  603  systemctl status containerd.service 
+  604  systemctl restart containerd.service 
+  605  systemctl status containerd.service 
+  606  kubeadm init --pod-network-cidr=10.244.0.0/16 
+  607  kubeadm reset -f 
+  608  history | grep rm 
+  609  rm -rf /etc/cni/net.d/
+  610  rm -rf /var/lib/cni/
+  611  rm -rf /etc/kubernetes/
+  612  kubeadm init --pod-network-cidr=10.244.0.0/16 
+  613  vim /etc/containerd/config.toml 
+  614  mv /etc/systemd/system/kubelet.service.d /root/
+  615  systemctl daemon-reload 
+  616  systemctl restart containerd.service 
+  617  kubeadm reset -f 
+  618  history | grep rm 
+  619  rm -rf /etc/cni/net.d/
+  620  rm -rf /var/lib/cni/
+  621  rm -rf /etc/kubernetes/
+  622  kubeadm init --pod-network-cidr=10.244.0.0/16 
+  623  mkdir -p $HOME/.kube
+  624  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  625  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  626  cd projects/
+  627  pwd
+  628  ll
+  629  git clone https://github.com/cprakash2118/kubernetes-setup.txt
+  630  cat kubernetes-setup.txt/kubernetes-setup-recap 
+  631  cat kubernetes-setup.txt/kubernetes-setup-recap |less
+  632  history | grep rm 
+  633  cat kubernetes-setup.txt/kubernetes-setup-recap |less
+  634  kubeadm reset -f 
+  635  history | grep rm 
+  636  rm -rf /etc/cni/net.d/
+  637  rm -rf /var/lib/cni/
+  638  rm -rf /etc/kubernetes/
+  639  pwd
+  640  kubeadm init --pod-network-cidr=10.244.0.0/16
+  641  mkdir -p $HOME/.kube
+  642  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  643  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  644  kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
+  645  curl -O https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/custom-resources.yaml
+  646  sed -i 's/cidr: 192\.168\.0\.0\/16/cidr: 10.244.0.0\/16/g' custom-resources.yaml
+  647  kubectl create -f custom-resources.yaml
+  648  sudo kubeadm token create --print-join-command
+  649  kubectl get all -n kube-system 
+  650  kubectl get pod -n kube-system 
+  651  vim custom-resources.yaml 
+  652  kubectl get pod -n kube-system 
+  653  kubectl describe pods coredns-76f75df574-cl79w |less
+  654  kubectl describe pods coredns-76f75df574-cl79w  -n kube-system |less
+  655  sudo kubeadm token create --print-join-command
+  656  kubectl get pod -n kube-system 
+  657  kubectl version 
+  658  kubectl get nodes
+  659  kubectl describe nodes | grep -i taint 
+  660  kubectl get nodes
+  661  kubectl get pod -n kube-system 
+  662  kubectl get nodes
+  663  kubeadm config images pull
+  664  kubectl apply -f custom-resources.yaml 
+  665  kubectl get nodes
+  666  kubectl get pod -n kube-system 
+  667  kubectl delete pod coredns-76f75df574-cl79w -n kube-system 
+  668  kubectl delete pod coredns-76f75df574-zrj9h -n kube-system 
+  669  kubectl get pod -n kube-system 
+  670  kubectl describe nodes | grep -i taint 
+  671  oc edit nodes k8s-master20-02.lab.example.com
+  672  kubectl edit nodes k8s-master20-02.lab.example.com
+  673  oc edit deployment 
+  674  kubectl edit deployment 
+  675  kubectl edit deployment -n kube-system 
+  676  kubectl get pod -n kube-system 
+  677  kubectl get nodes
+  678  kubectl get pod -n kube-system 
+  679  kubectl get nodes
+  680  systemctl restart containerd.service 
+  681  systemctl restart kubelet.service 
+  682  kubectl get nodes
+  683  kubectl get pod -n kube-system 
+  684  kubectl get ns
+  685  kubectl get pod -n kube-system 
+  686  ll
+  687  pwd
+  688  ll
+  689  cd kubernetes-projects/
+  690  pwd
+  691  ll
+  692  cd ..
+  693  mv kubernetes-projects /tmp/
+  694  mv kubernetes-projects /var/tmp/
+  695  pwd
+  696  ll
+  697  git clone https://github.com/cprakash2118/kubernetes-projects
+  698  ll
+  699  cat kubernetes-projects/MetalLB-setup/reference-file.txt 
+  700  cat kubernetes-projects/MetalLB-setup/reference-file.txt  |less
+  701  ll
+  702  cat kubernetes-projects/Session-explanation.txt 
+  703  cat kubernetes-projects/Session-explanation.txt  |less
+  704  cat kubernetes-projects/MetalLB-setup/reference-file.txt  |less
+  705  kubectl get ns 
+  706  cd projects/
+  707  pwd
+  708  ll
+  709  cd 5th-project/
+  710  pwd
+  711  ll
+  712  cd project5.2/
+  713  pwd
+  714  ll
+  715  mkdir jboss-based-epa
+  716  cp -rpv deployment-resource-v1.5.yaml service-resource-apache.yaml jboss-based-epa/
+  717  cd jboss-based-epa/
+  718  pwd
+  719  ll
+  720  vim Containerfile
+  721  ls -l /home/student/Downloads/jboss-eap-7.4.0.zip .
+  722  cp -rpv /home/student/Downloads/jboss-eap-7.4.0.zip .
+  723  ll
+  724  unzip jboss-eap-7.4.0.zip 
+  725  ll
+  726  vim Containerfile 
+  727  #jboss-eap-7.4/bin/standalone.sh 
+  728  vim Containerfile 
+  729  ll
+  730  rm -rf jboss-eap-7.4 
+  731  ll
+  732  podman build -t jboss-image-v74  .
+  733  podman pull quay.io/cprakash1821/april-java-unzip-httpd-image-02
+  734  podman login quay.io
+  735  podman pull quay.io/cprakash1821/april-java-unzip-httpd-image-02
+  736  vim Containerfile 
+  737  podman build -t jboss-image-v74  .
+  738  podman images
+  739  podman tag localhost/jboss-image-v74 quay.io/cprakash2118/jboss-image-v74
+  740  podman images
+  741  podman push quay.io/cprakash2118/jboss-image-v74
+  742  kubectl get ns 
+  743  kubectl create ns demo-Dockerfile-deploy
+  744  kubectl create ns demo-dockerfile-deploy
+  745  cat ~/.bashrc 
+  746  set-ns demo-dockerfile-deploy
+  747  show-current-ns 
+  748  kubectl get all 
+  749  ll
+  750  podman images
+  751  ll
+  752  vim deployment-resource-v1.5.yaml 
+  753  vim service-resource-apache.yaml 
+  754  kubectl apply -f deployment-resource-v1.5.yaml 
+  755  watch kubectl get podssssss 
+  756  watch kubectl get pods
+  757  kubectl get pods
+  758  kubectl logs jboss-deployment-865bb9f677-ks8g2
+  759  kubectl logs jboss-deployment-865bb9f677-ks8g2 |less
+  760  kubectl get pods
+  761  kubectl logs jboss-deployment-865bb9f677-rw4p6
+  762  podman images
+  763  podman run --name jboss-01 -p 8091:8080 -p 8092:9990 -p 8093:9999 -d localhost/jboss-image-v74
+  764  podman ps
+  765  podman ps -a
+  766  podman logs jboss-01
+  767  vim Containerfile 
+  768  podman build -t jboss-image-v74  .
+  769  podman push quay.io/cprakash2118/jboss-image-v74
+  770  kubectl get pods
+  771  kubectl delete deployments.apps jboss-deployment 
+  772  kubectl get svc 
+  773  kubectl get all
+  774  kubectl apply -f deployment-resource-v1.5.yaml 
+  775  watch kubectl get pods
+  776  kubectl get pods
+  777  kubectl logs jboss-deployment-865bb9f677-7w89f
+  778  vim Containerfile 
+  779  podman ps -a
+  780  podman rm -f jboss-01 
+  781  podman run --name jboss-01 -p 8091:8080 -p 8092:9990 -p 8093:9999 -d localhost/jboss-image-v74
+  782  podman ps 
+  783  vim Containerfile 
+  784  kubectl apply -f service-resource-apache.yaml 
+  785  kubectl delete deployments.apps jboss-deployment 
+  786  kubectl get service 
+  787  vim deployment-resource-v1.5.yaml 
+  788  vim service-resource-apache.yaml 
+  789  kubectl apply -f deployment-resource-v1.5.yaml 
+  790  kubectl get pods
+  791  kubectl logs jboss-deployment-85959dfb74-drcx5
+  792  vim deployment-resource-v1.5.yaml 
+  793  podman ps
+  794  podman logs  jboss-01 |less
+  795  vim deployment-resource-v1.5.yaml 
+  796  kubectl delete deployments.apps jboss-deployment 
+  797  kubectl apply -f deployment-resource-v1.5.yaml 
+  798  kubectl get pods
+  799  kubectl logs  jboss-deployment-865bb9f677-5w7z7
+  800  podman images
+  801  history | grep tag 
+  802  podman tag localhost/jboss-image-v74 quay.io/cprakash2118/jboss-image-v74-update
+  803  podman push  quay.io/cprakash2118/jboss-image-v74-update
+  804  podman logs quay.io
+  805  podman login quay.io
+  806  podman push  quay.io/cprakash2118/jboss-image-v74-update
+  807  vim Containerfile 
+  808  ;Q!
+  809  vim deployment-resource-v1.5.yaml 
+  810  kubectl get pods
+  811  kubectl delete deployments.apps jboss-deployment 
+  812  kubectl apply -f deployment-resource-v1.5.yaml 
+  813  kubectl get pods
+  814  watch kubectl get pods
+  815  kubectl get pods
+  816  kubectl get all
+  817  vim service-resource-apache.yaml 
+  818  kubectl apply -f service-resource-apache.yaml 
+  819  vim service-resource-apache.yaml 
+  820  kubectl apply -f service-resource-apache.yaml 
+  821  kubectl get svc 
+  822  kubectl describe svc 
+  823  vim service-resource-apache.yaml 
+  824  cp -rpv service-resource-apache.yaml service-resource-apache-02.yaml 
+  825  vim service-resource-apache-02.yaml 
+  826  kubectl apply -f service-resource-apache
+  827  kubectl apply -f service-resource-apache-02.yaml 
+  828  kubectl get svc 
+  829  ll
+  830  kubectl get pods
+  831  kubectl describe pod jboss-deployment-7bd4454f4c-2fkwb |less
+  832  kubectl create ns demo-jboss-prod-deployment
+  833  set-ns demo-jboss-prod-deployment
+  834  cat ~/.bashrc 
+  835  show-current-ns 
+  836  kubectl get all 
+  837  pwd
+  838  ll
+  839  vim ResourceQuota-example01.yaml 
+  840  kubectl apply -f ResourceQuota-example01.yaml 
+  841  kubectl describe resourcequotas 
+  842  kubectl get resourcequotas 
+  843  kubectl edit resourcequotas my-quota-name 
+  844  ll
+  845  vim LimitRange-example-01.yaml 
+  846  kubectl apply -f LimitRange-example-01.yaml 
+  847  vim LimitRange-example-01.yaml 
+  848  kubectl apply -f LimitRange-example-01.yaml 
+  849  vim LimitRange-example-01.yaml 
+  850  kubectl apply -f LimitRange-example-01.yaml 
+  851  kubectl describe resourcequotas 
+  852  kubectl describe limitranges 
+  853  ll
+  854  kubectl apply -f deployment-resource-v1.5.yaml 
+  855  kubectl apply -f service-resource-apache.yaml 
+  856  kubectl apply -f service-resource-apache-02.yaml 
+  857  kubectl get pods 
+  858  kubectl describe resourcequotas 
+  859  kubectl describe limitranges 
+  860  vim ResourceQuota-example01.yaml 
+  861  kubectl apply -f ResourceQuota-example01.yaml 
+  862  kubectl describe resourcequotas 
+  863  kubectl describe limitranges 
+  864  kubectl get pods 
+  865  vim deployment-resource-v1.5.yaml 
+  866  kubectl describe jboss-deployment-7bd4454f4c-c229v |less
+  867  kubectl describe pod jboss-deployment-7bd4454f4c-c229v |less
+  868  vim LimitRange-example-01.yaml 
+  869  kubectl delete deployments.apps jboss-deployment 
+  870  kubectl get pods
+  871  vim deployment-resource-v1.5.yaml 
+  872  vim LimitRange-example-01.yaml 
+  873  kubectl apply -f LimitRange-example-01.yaml 
+  874  kubectl describe resourcequotas 
+  875  kubectl describe limitranges 
+  876  kubectl apply -f deployment-resource-v1.5.yaml 
+  877  kubectl get pods
+  878  kubectl describe resourcequotas 
+  879  kubectl adm top pods
+  880  kubectl top pods
+  881  kubectl get pods
+  882  kubectl exec -it jboss-deployment-7bd4454f4c-bgclx u root -- bash 
+  883  kubectl get pods
+  884  kubectl describe resourcequotas 
+  885  kubectl describe limitranges 
+  886  kubectl describe pod jboss-deployment-7bd4454f4c-bgclx |less
+  887  vim LimitRange-example-01.yaml 
+  888  kubectl apply -f LimitRange-example-01.yaml 
+  889  kubectl get pods
+  890  kubectl describe limitranges 
+  891  kubectl describe resourcequotas 
+  892  kubectl scale --replicas=0 deployment jboss-deployment 
+  893  kubectl describe resourcequotas 
+  894  kubectl delete deployments.apps jboss-deployment 
+  895  kubectl describe resourcequotas 
+  896  kubectl describe limitranges 
+  897  kubectl apply -f deployment-resource-v1.5.yaml 
+  898  kubectl describe resourcequotas 
+  899  kubectl scale --replicas=2 deployment jboss-deployment 
+  900  kubectl get pods
+  901  kubectl get events | grep jboss |less
+  902  kubectl get replicaset 
+  903  vim LimitRange-example-01.yaml 
+  904  kubectl apply -f LimitRange-example-01.yaml 
+  905  kubectl describe limitranges 
+  906  kubectl describe resourcequotas 
+  907  kubectl scale --replicas=0 deployment jboss-deployment 
+  908  kubectl get pods
+  909  kubectl describe resourcequotas 
+  910  kubectl get pods
+  911  kubectl describe resourcequotas 
+  912  kubectl scale --replicas=2 deployment jboss-deployment 
+  913  kubectl describe resourcequotas 
+  914  kubectl get pods
+  915  kubectl describe svc 
+  916  kubectl get svc 
+  917  ll
+  918  du -sh * 
+  919  vim Containerfile 
+  920  kubectl get pods
+  921  kubectl exec -it jboss-deployment-7bd4454f4c-t7brb u root -- bash 
+  922  vim Containerfile 
+  923  kubectl exec -it jboss-deployment-7bd4454f4c-t7brb u root -- bash 
+  924  vim Containerfile 
+  925  ll
+  926  history > history.txt 

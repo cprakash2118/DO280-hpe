@@ -1,0 +1,23 @@
+FROM quay.io/cprakash2118/april-java-unzip-httpd-image-02
+MAINTAINER DevOps Team, devops-xyz@example.com
+USER root
+
+# Create jboss path, copy latest zip file for setup jboss   
+RUN mkdir -p /opt/jboss 
+COPY jboss-eap-7.4.0.zip /opt/jboss/jboss-eap-7.4.0.zip 
+RUN unzip /opt/jboss/jboss-eap-7.4.0.zip -d /opt/jboss && \
+    rm -rf /opt/jboss/jboss-eap-7.4.0.zip
+
+# Environment Variables.
+ENV JBOSS_HOME /opt/jboss/jboss-eap-7.4  
+
+# User addition 
+RUN ${JBOSS_HOME}/bin/add-user.sh  admin passwd123 --silent
+
+RUN chown -R jboss:jboss /opt/jboss  && \
+    chmod -R 755 /opt/jboss
+
+# Port expose 
+EXPOSE 8080 9990 9999
+USER jboss 
+CMD ["/opt/jboss/jboss-eap-7.4/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"] 

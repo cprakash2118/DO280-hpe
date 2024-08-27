@@ -1,0 +1,8 @@
+kind: Kustomization
+commonLabels:
+  app: database
+resources:
+- deployment.yaml
+- service.yaml
+- configmap.yaml
+

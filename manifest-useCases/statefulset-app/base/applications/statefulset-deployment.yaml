@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:  
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: quay.io/cprakash2118/famous-quotes
+        ports:
+        - containerPort: 8000
+        env:
+        - name: QUOTES_DATABASE
+          valueFrom:
+            secretKeyRef:
+              key: DATABASE
+              name: mysql
+        - name: QUOTES_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: ROOT_PASSWORD
+              name: mysql
+        - name: QUOTES_USER
+          valueFrom:
+            secretKeyRef:
+              key: USER
+              name: mysql
+        - name: QUOTES_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              key: hostname
+              name: mysql
+        - name: QUOTES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mysql

@@ -1,0 +1,133 @@
+1. Pods in Kubernetes:-
+A Pod is the smallest and most basic deployable object in Kubernetes. It represents a single instance of a running process in your cluster. Pods contain one or more containers, such as Docker containers. When a Pod runs multiple containers, the containers are managed as a single entity and share the Pod's resources, such as networking and storage.
+
+2. namespace:-
+
+-Create a Namespace
+kubectl create namespace my-namespace
+
+- Switch to the Namespace
+kubectl config set-context --current --namespace=my-namespace  
+
+- Verification
+kubectl config view --minify --output 'jsonpath={..namespace}' ; echo 
+
+
+Explanation:-
+kubectl create namespace <namespace-name>
+- Creates a new namespace with the specified name in your Kubernetes cluster.
+
+kubectl config set-context --current --namespace=<namespace-name>
+- Sets the current context to use the specified namespace. The --current flag ensures that the current context is updated without changing other settings.
+
+kubectl config view --minify --output 'jsonpath={..namespace}' ; echo 
+- Verifies the current namespace configured in your kubectl context. It uses JSONPath to extract and display the namespace.
+
+###-----------LAB
+
+# vim pod-example.yaml 
+# kubectl create namespace my-ns-pod-exp-01
+# kubectl config set-context --current --namespace=my-ns-pod-exp-01
+# kubectl config view --minify --output 'jsonpath={..namespace}' ; echo 
+# kubectl apply -f pod-example.yaml
+# kubectl get pods 
+# kubectl describe pod 
+# kubectl edit pod 
+# kubectl delete pod 
+
+Application Image 
+- nginx
+- quay.io/cprakash2118/april-java-unzip-httpd-image-02
+- quay.io/cprakash2118/famous-quotes
+ 
+Database Image 
+- quay.io/cprakash2118/rhel8-mysql-80
+
+
+######################
+ReplicaSet in Kubernetes:
+A ReplicaSet is a Kubernetes resource that ensures a specified number of pod replicas are running at any given time. It is often used to guarantee the availability of a specified number of identical Pods.
+
+This ReplicaSet ensures that three Pods running the nginx container are always up. If a Pod fails, the ReplicaSet starts a new one to maintain the desired count.
+
+####-------------LAB
+# vim replicaset-example.yaml 
+# kubectl create namespace my-ns-replicaset-exp-01
+# kubectl config set-context --current --namespace=my-ns-replicaset-exp-01
+# kubectl config view --minify --output 'jsonpath={..namespace}' ; echo 
+# kubectl apply -f replicaset-example.yaml
+# kubectl get pods 
+# kubectl describe pod 
+# kubectl edit pod 
+# kubectl delete pod 
+
+# kubectl get replicaset  
+# kubectl describe replicaset
+# kubectl edit replicaset
+# kubectl delete replicaset
+Note: All pod also deleted 
+# kubectl get pods 
+
+Application Image 
+- nginx
+- quay.io/cprakash2118/april-java-unzip-httpd-image-02
+- quay.io/cprakash2118/famous-quotes
+ 
+Database Image 
+- quay.io/cprakash2118/rhel8-mysql-80
+
+
+########################################
+###3-Deployment in Kubernetes
+
+A Deployment provides declarative updates to Pods and ReplicaSets. You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate.
+
+####-------------LAB
+# vim replicaset-example.yaml 
+# kubectl create namespace my-ns-deployment-exp-01
+# kubectl config set-context --current --namespace=my-ns-deployment-exp-01
+# kubectl config view --minify --output 'jsonpath={..namespace}' ; echo 
+# kubectl apply -f deployment-example.yaml
+# kubectl get pods 
+# kubectl describe pod 
+# kubectl edit pod 
+# kubectl delete pod 
+
+# kubectl get deployment 
+# kubectl describe deployment 
+# kubectl edit deployment 
+# kubectl delete replicaset
+
+Note: All pod also deleted 
+# kubectl get pods 
+
+Application Image 
+- nginx
+- quay.io/cprakash2118/april-java-unzip-httpd-image-02
+- quay.io/cprakash2118/famous-quotes
+ 
+Database Image 
+- quay.io/cprakash2118/rhel8-mysql-80
+
+This example creates a Deployment that manages a ReplicaSet which in turn manages three Pods. If these Pods need to be updated or scaled, the Deployment handles this automatically.
+
+##########################################################
+
+
+4. Labels and Selectors
+Labels are key/value pairs that are attached to objects, such as Pods, for identification purposes. They can be used to organize and to select subsets of objects.
+
+Selectors are used to select a group of objects based on their labels. Selectors can be used in various APIs that require to identify a set of objects, like in ReplicaSets or Services.
+
+Example with Labels and Selector: Labels-and-Selector-example-01.yaml
+
+In this example, the ReplicaSet is configured to manage Pods with the label app: myapp. The matchLabels selector in the ReplicaSet specification ensures that only Pods with the app: myapp label are managed by this ReplicaSet.
+
+#######--------------------
+  podman run --name mysql-basic  -e MYSQL_USER=user1 -e MYSQL_PASSWORD=mypa55  -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55  -d quay.io/cprakash2118/rhel8-mysql-80
+ 
+
+ CREATE TABLE Projects (id int NOT NULL,name varchar(255) DEFAULT NULL,code varchar(255) DEFAULT NULL,PRIMARY KEY (id));
+ 
+ insert into Projects (id, name, code) values (1,'DevOps','COntainer');
+ insert into Projects (id, name, code) values (1,'DevOps','Kubernetes');

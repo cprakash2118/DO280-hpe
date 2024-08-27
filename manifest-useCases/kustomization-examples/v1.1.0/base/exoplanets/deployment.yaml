@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: exoplanets
+  name: exoplanets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exoplanets
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: exoplanets
+      name: exoplanets
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: db-config
+        - secretRef:
+            name: db-secrets
+        image: registry.ocp4.example.com:8443/redhattraining/exoplanets:v1.1.0
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 30
+          timeoutSeconds: 3
+        name: exoplanets
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          timeoutSeconds: 3
+        resources:
+          limits:
+            cpu: 250m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 512Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault

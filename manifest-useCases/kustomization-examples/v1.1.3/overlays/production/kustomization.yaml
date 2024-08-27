@@ -1,0 +1,8 @@
+kind: Kustomization
+resources:
+- ../../base/
+patches:
+- path: patch-replicas.yaml
+  target:
+    kind: Deployment
+    name: exoplanets
