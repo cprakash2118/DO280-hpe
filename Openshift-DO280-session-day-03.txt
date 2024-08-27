@@ -1,0 +1,125 @@
+#Unit -4 - Network Security
+- Route (http/https - Edge/Passthrough/Re-encryption).
+- Network Policies 
+- Internal Communication - Encrypt (w.r.t service-ca)
+
+FYI - (http/https based application)
+
+#Unit -5 - Network (non http/https based application)
+  - service - LB,NodePort,ClusterIP - LB (MetalLB application).
+  - Multus Secondary Networks
+
+
+
+; OpenShift Internal - Load balancer
+api.ocp4.example.com.        IN    A    172.168.1.141    (External LB)
+api-int.ocp4.example.com.    IN    A    172.168.1.141    (Internal LB)
+*.apps.ocp4.example.com.     IN    A    172.168.1.141    (HAproxy LB )
+
+==============
+
+namespace-01=network-policies 
+pod=hello ; svc=hello ; deployment=hello ; route=hello 
+pod=test ; svc=test ; deployment=test ; route=test 
+
+Note: n/w policies implement here (ns=network-policies)
+
+
+namespace-02=diffrent-namepsace 
+pod=sample-app ; svc=sample-app ; deployment=sample-app ; route=sample-app
+
+
+################################################
+Verify the access:-
+hello <-> test 
+hello <-> sample-app
+
+test <-> sample-app
+
+
+Case-01:-  Deny all  
+- Unable to communicate to any POD 
+
+Case-02.1:- Allow from specific pod to specific pod [ can be on same namepsace or different]
+
+implement allow (From ns=different-namepsace w.r.t sample-app)
+labels w.r.t namepsace - oc label namespace different-namepsace network=different-namepsace
+
+Case-02.2:- Allow from specific pod to specific pod [ can be on same namepsace or different]
+
+implement allow (From ns=network-policies w.r.t test)
+labels w.r.t namepsace - oc label namespace network-policies network=different-policies
+
+Case-03:- Applying network policies on route - It will not work as per our LAB.
+Note: master node and worker node are same. 
+
+
+****
+Protect Internal Traffic with TLS
+ "service-ca controller"
+ 
+Key - private (Used for decrypt data) /public (Encrypt data)
+ 
+ca.crt
+ca.key 
+
+service-ca controller - CA 
+
+Step-1
+oc annotate service hello service.beta.openshift.io/serving-cert-secret-name=hello-secret
+
+spec:
+ template:
+   spec:
+    containers:
+     - name: hello
+       volumeMounts:
+       - name: hello-volume
+         mountPath: /etc/pki/nginx/
+    volumes:
+    - name: hello-volume
+      secret:
+        defaultMode: 420
+        secretName: hello-secret
+        items:
+          - key: tls.crt
+            path: server.crt
+          - key: tls.key
+            path: private/server.key
+
+Step-2 : Configuration Maps
+ oc annotate configmap ca-bundle service.beta.openshift.io/inject-cabundle=true
+ 
+ 
+ oc exec no-ca-bundle --  openssl s_client -connect server.network-svccerts.svc:443
+ 
+ 
+ server.network-svccerts.svc:443
+ 
+ server.network-svccerts.svc:443
+ 
+###################
+Expose non-HTTP/SNI Applications
+
+#Kubernetes/OpenShift resources.
+- pod 
+- svc    [ Expose service "http/https" - ClusterIP, NodePort, LoadBalancer ]
+- deployment 
+- replicaset 
+- secret 
+- configmap
+- route 
+
+
+
+#########
+Unit-5 (Last topic)
+- Multus Secondary Networks
+master01.ocp4.example.com [192.168.50.10/24 ; 192.168.51.10/24 ]
+utility.lab.example.com   [172.25.250.253/24; 192.168.51.XX/24 ] - LB/DNS 
+
+Unit-6 
+- ResourceQuota [Compute Resource - CPU, MEMORY, Storage ; OCP Resource - pod/svc/rs/dep/pvc/cm] 
+- LimitRange    [ Application - Limits & Requites w.r.t MEMORY & CPU ]
+
+ 
