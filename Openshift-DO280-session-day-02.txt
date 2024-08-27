@@ -1,0 +1,310 @@
+Unit-1# Declarative Resource Management
+- Resource Manifests 
+- Kustomize Overlays
+
+
+# Deploy and update applications from resource manifests that are stored as YAML files.
+- Imperative Versus Declarative Workflows
+
+$ kubectl create deployment db-pod --port 3306  --image registry.ocp4.example.com:8443/rhel8/mysql-80
+$ oc get pods 
+$ oc get deployment 
+
+$ kubectl set env deployment/db-pod MYSQL_USER='user1' MYSQL_PASSWORD='mypa55w0rd'  MYSQL_DATABASE='items'
+
+
+Using Declarative Commands
+- Creating Kubernetes Manifests
+$ kubectl create deployment hello-openshift -o yaml  --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0 --save-config  --dry-run=client > example-deployment.yaml
+
+$ vim example-deployment.yaml 
+Explanation:-
+The --save-config option adds configuration attributes that declarative commands use. For deployments resources, this option saves the resource configuration in an kubectl.kubernetes.io/last-applied-configuration annotation.
+
+The --dry-run=client option prevents the command from creating resources in the cluster.
+
+
+
+
+# Declarative Workflows:-
+
+$tree my-app
+my-app
+├── example_deployment.yaml
+└── service
+ └── example_service.yam
+ 
+$  kubectl create -R -f my-app
+Even with URL also.
+kubectl create -f https://example.com/example-apps/deployment.yaml
+ 
+
+YAML Validation:-
+$ kubectl apply -f ~/my-app/example-deployment.yaml --dry-run=server --validate=true
+
+
+Comparing Resources
+$ kubectl diff -f example-deployment.yaml
+
+Patching Kubernetes Resources:-
+
+$ oc patch deployment hello -p '{"spec":{"template":{"spec":{"resources":{"requests":{"cpu": "100m"}}}}}}'
+$ oc patch deployment hello --patch-file volume-mount.yaml
+$ vim volume-mount.yaml 
+
+
+
+
+
+##################
+Kustomize Overlays
+
+- Deploy and update applications from resource manifests that are augmented by Kustomize.
+
+Kustomize File Structure
+base
+├── configmap.yaml
+├── deployment.yaml
+├── secret.yaml
+├── service.yaml
+├── route.yaml
+└── kustomization.yaml
+
+
+
+$ vim kustomization.yaml 
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- configmap.yaml
+- deployment.yaml
+- secret.yaml
+- service.yaml
+- route.yaml
+
+
+$ tree
+base
+├── configmap.yaml
+├── deployment.yaml
+├── secret.yaml
+├── service.yaml
+├── route.yaml
+└── kustomization.yaml
+overlay
+ └── development
+ └── kustomization.yaml
+ └── testing
+ └── kustomization.yaml
+ └── production
+ ├── kustomization.yaml
+ └── patch.yaml
+ 
+Example shows a kustomization.yaml file in the overlays/development directory:
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: dev-env
+resources:
+- ../../base
+
+
+View and Deploy Resources by Using Kustomize
+$ kubectl apply -k overlay/production
+or
+$ oc apply -k overlay/production
+
+
+Delete Resources by Using Kustomize
+$ oc delete -k overlay/production
+
+
+Kustomize Generators
+- Configuration Map Generator
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: hello-stage
+resources:
+- ../../base
+configMapGenerator:
+- name: hello-app-configmap
+  literals:
+   - msg="Welcome!"
+   - enable="true"
+
+ConfigMap 
+
+
+configMapGenerator:
+- name: configmap-1 
+  files:
+   - application.properties
+   - name: configmap-2 
+  envs:
+   - configmap-2.env
+   - name: configmap-3 
+  literals:
+   - name="configmap-3"
+   - description="literal key-value pair"
+
+
+The configmap-1 key is using the application.properties file.
+The configmap-2 key is using the configmap-2.env file.
+The configmap-3 key is using a literal key-value pair
+
+
+Secret - Secret Generator
+
+...output omitted...
+secretGenerator:
+- name: secret-1 
+  files:
+   - password.txt
+   - name: secret-2 
+  envs:
+   - secret-mysql.env
+- name: secret-3 
+  literals:
+   - MYSQL_DB=mysql
+   - MYSQL_PASS=root
+
+The secret-1 key is using the password.txt file.
+The secret-2 key is using the secret-mysql.env file.
+The secret-3 key is using literal key-value pairs.
+
+
+#########################################################################
+Unit-2 Deploy Packaged Applications
+
+- OpenShift Templates
+- Helm Charts 
+
+ Deploy an application and its dependencies from resource manifests that are stored in anOpenShift template.
+
+Discovering Templates
+$ oc get templates -n openshift
+$ oc get template -n openshift -o name 
+
+$ oc describe template cache-service -n openshift
+$ oc process --parameters cache-service -n openshift
+
+Use the -f option to view the parameters of a template that are defined in a file:
+$ oc process --parameters -f my-cache-service.yaml
+$ oc get template cache-service -o yaml -n openshift
+
+Deploying Applications from Templates:-
+$ oc new-app --template=cache-service -p APPLICATION_USER=my-user
+
+$ oc process my-cache-service  -p APPLICATION_USER=user1 -o yaml > my-cache-service-manifest.yaml
+
+$ oc process -f my-cache-service.yaml -p APPLICATION_USER=user1 -o yaml > my-cache-service-manifest.yaml
+
+$ $ oc process my-cache-service -o yaml  -p TOTAL_CONTAINER_MEM=1024  -p APPLICATION_USER='cache-user'  -p APPLICATION_PASSWORD='my-secret-password' > my-cache-service-manifest.yaml
+
+
+
+The corresponding oc process command uses the --param-file option to pass the parameters as follows:
+
+$ oc process my-cache-service -o yaml  --param-file=my-cache-service-params.env > my-cache-service-manifest.yaml
+
+$ oc process my-cache-service  --param-file=my-cache-service-params.env | oc apply -f -
+
+$  oc process my-cache-service -o yaml  --param-file=my-cache-service-params-2.env | oc diff -f -
+
+
+Managing Templates:-
+oc get template cache-service -o yaml -n openshift my-cache-service.yaml
+
+oc create -f my-cache-service.yaml
+oc create -f my-cache-service.yaml -n shared-templates
+
+oc get templates -n shared-templates
+
+
+###Helm Chart 
+Helm
+Helm is an open source application that helps to manage the lifecycle of Kubernetes applications.
+
+
+
+1-Install Helm on CentOS 9, Download the Helm binary:
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+
+2- Run the Helm installation script:
+chmod 700 get_helm.sh
+./get_helm.sh
+
+Verify the Helm installation:
+helm version
+
+3- Add the MetalLB Helm Repository
+Add the MetalLB Helm repository:
+helm repo add metallb https://metallb.github.io/metallb
+
+4- Update your Helm repositories:
+helm repo update
+
+5- Install MetalLB using Helm- Create a namespace for MetalLB
+kubectl create namespace metallb-system
+
+6- Install MetalLB:
+helm install metallb metallb/metallb --namespace metallb-system 
+
+Refer this for more details:-
+https://github.com/cprakash2118/kubernetes-projects
+Kubernetes-Basic-Advance-Labs/MetalLB-Ingress-Controller/MetalLB-Ingress-Controller-via-helm-reference-docs.txt
+
+
+
+
+Using Helm Charts
+Helm is a command-line application. The helm command interacts with the following entities:
+
+Charts
+Charts are the packaged applications that the helm command deploys.
+
+Releases
+A release is the result of deploying a chart. You can deploy a chart many times to the same cluster. Each deployment is a different release.
+
+Versions
+A Helm chart can have many versions. Chart authors can release updates to charts, to adapt to later application versions, introduce new features, or fix issues.
+
+$ helm create reference
+$ helm show chart reference
+$ helm show value reference
+
+$ helm install release-name reference --dry-run --values values.yaml
+
+
+$ helm list 
+
+
+Upgrading Releases
+The helm upgrade command can apply changes to existing releases, such as updating values or the chart version
+- Rolling Back Helm Upgrades
+ $ helm history release_name
+ $ helm rollback release_name revision
+ 
+ 
+ Helm Repositories
+ $ helm repo add openshift-helm-charts https://charts.openshift.io/
+ $ helm search repo
+ 
+ 
+ 
+ Example:
+
+$ helm repo list
+$ helm repo add do280-repo http://helm.ocp4.example.com/charts
+$ helm search repo --versions
+$ helm show values do280-repo/etherpad --version 0.0.6
+
+$ oc new-project packaged-charts-development
+
+$ helm install example-app do280-repo/etherpad -f values.yaml --version 0.0.6
+$ helm list 
+$ helm search repo --versions
+
+$ helm upgrade example-app do280-repo/etherpad -f values.yaml --version 0.0.7
+

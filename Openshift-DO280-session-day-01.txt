@@ -1,0 +1,245 @@
+###POint-01
+#Product - Red Hat OpenShift
+
+Cloud services editions - Fully managed in the public cloud of your choice
+- Red Hat OpenShift Service on AWS  (IPI method)
+- Microsoft Azure Red Hat OpenShift (IPI)
+- Red Hat OpenShift Dedicated (IPI)
+- Red Hat OpenShift on IBM Cloud (IPI)
+
+
+Self-managed editions - Granular control on your own infrastructure
+- Red Hat OpenShift Platform Plus (UPI)
+- Red Hat OpenShift Container Platform (UPI)
+- Red Hat OpenShift Kubernetes Engine (UPI)
+
+
+Services & add-ons - A portfolio of managed cloud services and tools for Red Hat OpenShift
+- Red Hat OpenShift AI
+- Red Hat Quay
+- Red Hat Advanced Cluster Management for Kubernetes
+- Red Hat Advanced Cluster Security for Kubernetes
+- Red Hat 3scale API Management
+- Red Hat OpenShift Consulting
+
+
+
+###POint-02
+# Training modules (Learning path)
+DO180/280/380 [DO180/280] - Admin I\II\III
+DO188/288/400 [Developer Basic part]
+DO480 - RHACM/RHACS/Quay.io 
+DO370 - ODF (OpenShift Data Foundation - Storage "Internal/External")
+DO328 - Red Hat Services Mesh (Istio Project)
+DO316 - Red Hat OpenShift Virtualization (kubeVirt).
+
+ROSA (Red Hat OpenShift AWS)
+CS221 [EX221]
+CS220 [EX229]
+
+Installation w.r.t Red Hat OpenShift.
+- Connected (master/worker - OCP cluster - when you must be having internet access for quay.io)
+- Disconnected (master/worker - OCP cluster - when you should not be conncted to internet for quay.io)
+
+https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html/installing/index
+https://docs.redhat.com/en/documentation/openshift_container_platform/4.14
+
+
+
+###POint-03:-
+Lab Environment.
+
+1) Users:- 
+   - Users login to VMs/Servers.
+   - student/student [sudo access]
+   - root/redhat 
+   
+   Users login to OCP cluster.
+   - kubeadmin/kubeamdin-password [ssh root@utility ; cd /home/lab/ocp4/auth/ ; scp -r kube* student@workstation:~/]
+   - admin/redhatocp (cluster-admin, OCP cluster).
+   - developer/developer (basic-user, OCP cluster.
+
+
+2) VMs/Labs:-
+   workstation.lab.example.com 
+   utility.lab.example.com 
+   
+   master01.ocp4.example.com 
+   idm.ocp4.example.com 
+   registry.ocp4.example.com 
+   git.ocp4.example.com
+   
+
+#####
+###POint-04:-
+Task-01- Basic Login [kubeadmin/admin/developer using kubeadmin-password file - Token Based auth ; using kubeconfig file] - Certificate based auth]
+
+Sol-01# Few required information needed to login to OCP cluster.
+API URL (CLI/API)   - https://api.ocp.example.com:6443 
+
+Web Console URL     - https://console-openshift-console.apps.example.com 
+FYI-
+  Application Name - console 
+  Namespace Name   - "openshift-console"
+  DNS wild card    - *.apps.ocp4.example.com
+  Cluster Name     - ocp4 
+  Base Domain      - example.com 
+  
+Certificate based authentication (Using kubeconfig file).
+- kubeconfig [ssh root@utility ; cd /home/lab/ocp4/auth/ ; scp -r kube* student@workstation:~/
+  student's password: student]
+
+a) oc get nodes --kubeconfig /home/student/kubeconfig 
+b) export KUBECONFIG=/home/student/kubeconfig   ; oc get nodes
+c) cp -rpv kubeconfig ~/.kube/config   ; oc get nodes
+
+
+
+Token based authentication (Using kubeadmin file).
+- oc login -u admin -p redhatocp   https://api.ocp4.example.com:6443"
+- oc login -u developer -p redhat   https://api.ocp4.example.com:6443"
+
+
+Task-02- Create multiple users via oauth authentication.
+   user1-5   [secretName=secret-do280-01 ; Identity-Provider=idp-htpasswd-sre-team, filename=my-htpasswd-file-sre ] 
+   user-6-10 [ secretName=secret-do280-02 ; Identity-Provider=idp-htpasswd-app-team, filename=my-htpasswd-file-apps ] 
+
+Step-1
+# dnf install https-tools or httpd  
+htpasswd -c -B -b htpasswd-file user1 redhat123 
+htpasswd    -B -b htpasswd-file user2 redhat123
+htpasswd    -B -b htpasswd-file user3 redhat123
+htpasswd    -B -b htpasswd-file user4 redhat123
+htpasswd    -B -b htpasswd-file user5 redhat123
+
+Step-2
+# oc create secret generic do280-secret --from-file htpasswd=htpasswd-file -n openshift-config 
+# oc get secret do280-secret -n openshift-config
+# oc get secret do280-secret -n openshift-config -o yaml 
+
+Step-3
+# oc get oauth/cluster -o yaml > oauth.yaml 
+or
+# oc get oauth cluster -o yaml > oauth.yaml
+# vim oauth.yaml 
+
+https://docs.redhat.com/en/documentation/openshift_container_platform/4.14
+"Authentication and authorization"
+
+https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html/authentication_and_authorization/configuring-identity-providers#identity-provider-htpasswd-CR_configuring-htpasswd-identity-provider
+
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: do280-idp-htpasswd 
+    mappingMethod: claim 
+    type: HTPasswd
+    htpasswd:
+      fileData:
+        name: do280-secret 
+
+:set paste 
+:set cuc
+:set nu 
+
+# oc apply -f oauth.yaml
+
+Step-04 - Verify and login 
+# oc get pods -n openshift-authentication
+FYI - if this pod(s) not updated/restarted then do below step.
+# oc delete pods -n openshift-authentication
+# oc get pods -n openshift-authentication
+
+# oc login -u user1 -p redhat123 https://api.ocp4.example.com:6443 
+# oc login -u user2 -p redhat123 https://api.ocp4.example.com:6443 
+# oc login -u user3 -p redhat123 https://api.ocp4.example.com:6443 
+# oc login -u user4 -p redhat123 https://api.ocp4.example.com:6443 
+# oc login -u user5 -p redhat123 https://api.ocp4.example.com:6443 
+
+# oc login -u kubeadmin -p redhat https://api.ocp4.example.com:6443 
+
+# oc get identity 
+# oc get users  
+
+
+####################################
+- Groups ops
+devop-5-grp  [user1..5]
+apps-grp [user6-10  
+
+Queries#
+project1, project2, project3, project4, and project5 
+user1 is admin of project1 
+user2 & user3 has view permission on project2
+user4 has edit power on project1 
+
+Solution#
+  #oc whoami
+  #oc new-project project1
+  #oc new-project project2
+  #oc new-project project3
+  #oc new-project project4
+  #oc new-project project5
+  
+   
+  # oc adm policy add-role-to-user admin user1 -n project1
+  # oc adm policy add-role-to-user view user2 user3 -n project2
+  # oc adm policy add-role-to-user edit user4 -n project1
+
+
+   
+
+- RBCA 
+devops-grp, user1 - cluster-admin 
+admin , user6 w.r.t namespace 
+
+oc adm policy add-role-user admin user6
+oc adm policy add-custer-role-to-user cluster-admin user6  
+
+oc adm policy [add/remove]
+
+Queries#
+Assign cluster permission to the users as: 
+- user5 would be the cluster admin.
+- user4 would not be allowed cluster admin powers.
+- No user would be able to provision projects. 
+- user3 would be allowed to provision projects
+- delete kubeadmin account.
+
+Solution#
+  # oc whoami
+  # oc adm policy add-cluster-role-to-user cluster-admin user5
+  # oc describe clusterrolebindings | grep self-pro
+  # oc describe clusterrolebindings self-provisioner
+  
+  # oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
+  # oc describe clusterrolebindings self-provisioner
+  # oc adm policy add-cluster-role-to-user self-provisioner user3
+  # oc get secret kubeadmin -n kube-system
+   login as jobs
+  # oc delete secret kubeadmin -n kube-system
+
+
+
+
+
+
+
+
+   
+   
+   
+   
+
+
+
+
+
+
+
+
+
+
