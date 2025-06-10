@@ -1,0 +1,108 @@
+Unit-1-# Declarative Resource Management:-
+- Resource Manifests 
+- Kustomize Overlays 
+
+- Resource Manifests (Discuss in details):-
+  What is resource manifests and why is required?
+  Kubernetes/OpenShift resources:-
+   1- POD 
+   2- service (svc)
+   3- replicaSet (rs)
+   4- deployment (deploy)
+   5- secret 
+   6- configMap (cm)
+   etc ... (Also know as CR- Custom Resource or kind: KindName)
+
+ Imperative Versus Declarative Workflows
+ 
+ Deploy application(s) via Imperative Workflows:-
+ $ oc new-project projectName 
+ $ oc project -q 
+ $ oc new-app --name myapp ImageURL
+ 
+ Example:-
+  $ oc new-project ns-myapp 
+  $ oc project -q 
+  ns-myapp
+  $ oc get all 
+  No resources found at this namespace.
+  $ oc new-app --name myapp httpd:2.4 
+  $ oc get pods 
+  $ oc get svc 
+  $ oc get replicaset 
+  $ oc get deployment 
+  
+  $ oc expose service myapp
+  $ oc get route 
+  
+
+Deploy application(s) via Declarative Workflows:-
+
+ kubectl create deployment hello-openshift -o yaml --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0 --save-config --dry-run=client > example-deployment.yaml
+ 
+POD-manifest:-
+
+apiVersion: v1 
+kind: Pod 
+metadata:
+  name: myapp 
+  labels:
+     app: myapp 
+spec:
+ containers:
+  
+ReplicaSet (rs)
+
+apiVersion: apps/v1 
+kind: ReplicaSet
+metadata:
+   name: myapp 
+spec:
+  replicas: 4
+  selector:
+    matchLabel:
+	  app: myapp 
+  template:
+   
+## Kustomize Overlays
+Kustomize
+ base/
+  kustomization.yaml 
+  deployment.yaml 
+  secret.yaml 
+  service.yaml 
+  configmap.yaml 
+  route.yaml 
+  
+vim kustomization.yaml 
+ apiVersion: kustomize.config.k8s.io/v1beta1
+ kind: Kustomization
+ resources:
+ - configmap.yaml
+ - deployment.yaml
+ - secret.yaml
+ - service.yaml
+ - route.yaml
+ 
+ 
+ Overlays  [Small deployment over your base]
+ 
+ 
+ 
+  
+  
+
+
+
+
+  
+ 
+ 
+ 
+ 
+
+
+
+ 
+  
+ 
